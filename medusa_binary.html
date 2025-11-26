@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Medusa Binary — Tsunami</title>
+<style>
+  html,body{height:100%;margin:0;background:#000;color:#0f0;font-family:monospace}
+  .wrap{display:flex;align-items:center;justify-content:center;height:100%}
+  svg{width:880px;height:880px;filter:drop-shadow(0 0 12px #00ff66)}
+  .face { fill: none; stroke: #0f0; stroke-width:1.2; opacity:0.6 }
+  .glowText { fill: #a8ff9a; font-weight:700; font-size:12px; letter-spacing:1px; opacity:0.95 }
+  .bgGrid { opacity:0.06; }
+  .snakePath { stroke: rgba(0,255,102,0.2); stroke-width:2; fill:none; }
+  .center-glow { fill: url(#gradGlow); opacity:0.12 }
+</style>
+</head>
+<body>
+<div class="wrap">
+<svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- background matrix grid -->
+  <defs>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+      <rect width="18" height="18" fill="#000"/>
+      <text x="2" y="14" font-family="monospace" font-size="10" fill="#00ff66">01</text>
+    </pattern>
+
+    <radialGradient id="gradGlow" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#00ff66" stop-opacity="0.65"/>
+      <stop offset="60%" stop-color="#00ff66" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="1000" fill="url(#dots)" class="bgGrid"/>
+
+  <!-- glow behind head -->
+  <circle cx="500" cy="360" r="220" class="center-glow"/>
+
+  <!-- face outline -->
+  <circle cx="500" cy="360" r="160" class="face"/>
+
+  <!-- eyes (binary style) -->
+  <g transform="translate(0,0)">
+    <text x="430" y="340" font-family="monospace" font-size="28" fill="#00ff66">1010 0101</text>
+    <text x="560" y="340" font-family="monospace" font-size="28" fill="#00ff66">1101 0011</text>
+  </g>
+
+  <!-- mouth - a binary line -->
+  <text x="450" y="395" font-family="monospace" font-size="14" fill="#88ff9a">0101101001011001001</text>
+
+  <!-- snake paths (invisible strokes but used for textPath) -->
+  <path id="p1" class="snakePath" d="M500,200 C460,150 360,90 320,110 C290,125 280,160 300,190 C330,230 380,220 420,240" />
+  <path id="p2" class="snakePath" d="M540,190 C580,140 680,80 720,100 C750,115 760,150 740,180 C710,220 660,210 620,230" />
+  <path id="p3" class="snakePath" d="M420,230 C380,200 300,210 260,260 C230,295 240,340 280,360 C320,380 360,370 400,380" />
+  <path id="p4" class="snakePath" d="M600,230 C640,200 720,210 760,260 C790,295 780,340 740,360 C700,380 660,370 620,380" />
+  <path id="p5" class="snakePath" d="M480,160 C480,120 460,80 420,60 C380,40 340,50 320,90 C300,130 310,180 350,200" />
+  <path id="p6" class="snakePath" d="M520,160 C520,120 540,80 580,60 C620,40 660,50 680,90 C700,130 690,180 650,200" />
+  <path id="p7" class="snakePath" d="M500,120 C520,90 570,60 610,40 C650,20 700,30 730,70 C760,110 740,150 700,170" />
+  <path id="p8" class="snakePath" d="M500,120 C480,90 430,60 390,40 C350,20 300,30 270,70 C240,110 260,150 300,170" />
+
+  <!-- placeholders for text along paths -->
+  <g id="snakesText" font-family="monospace" font-size="12" class="glowText">
+    <text>
+      <textPath xlink:href="#p1" id="t1"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p2" id="t2"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p3" id="t3"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p4" id="t4"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p5" id="t5"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p6" id="t6"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p7" id="t7"></textPath>
+    </text>
+    <text>
+      <textPath xlink:href="#p8" id="t8"></textPath>
+    </text>
+  </g>
+
+  <!-- header binary title -->
+  <text x="500" y="70" font-size="18" font-family="monospace" text-anchor="middle" fill="#00ff66">01001101 01100101 01100100 01110101 01110011 01100001</text>
+
+</svg>
+</div>
+
+<script>
+/*
+  Script: preenche cada textPath com uma sequência de 0/1 repetida.
+  Ajuste o tamanho do bloco 'chunk' ou o caractere se quiser outro estilo.
+*/
+(function(){
+  const ids = ["t1","t2","t3","t4","t5","t6","t7","t8"];
+  const base = "01"; // padrão binário
+  // cria um bloco grande de binário para repetir
+  let big = "";
+  for(let i=0;i<2000;i++){ big += base[Math.floor(Math.random()*2)]; }
+
+  ids.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    // preenche com substrings aleatórias para dar variação
+    let text = "";
+    // repetir até um comprimento que caiba no path visual
+    const repeats = 60 + Math.floor(Math.random()*80);
+    for(let r=0;r<repeats;r++){
+      const start = Math.floor(Math.random() * (big.length - 80));
+      text += big.substr(start, 40) + " ";
+    }
+    el.textContent = text;
+  });
+})();
+</script>
+
+</body>
+</html>
